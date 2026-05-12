@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leson Wallet</title>
+
+    <link rel="manifest" href="manifest.json" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      .fade {
+        animation: fade 0.4s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-xl font-bold mb-4">💰 Leson Wallet</h1>
+
+      <!-- INSTALL BUTTON -->
+      <button
+        id="installBtn"
+        class="bg-blue-500 text-white p-2 rounded mb-3 hidden"
+      >
+        Install App
+      </button>
+
+      <!-- MODAL -->
+      <div
+        id="modal"
+        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden"
+      >
+        <div class="bg-white p-4 rounded text-sm">
+          <p>Track your income and expenses easily.</p>
+          <button
+            onclick="closeModal()"
+            class="bg-blue-500 text-white px-3 py-1 mt-2 rounded"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <input type="month" id="monthFilter" class="p-2 border rounded" />
+        <button
+          onclick="exportCSV()"
+          class="bg-green-500 text-white p-2 rounded"
+        >
+          Export
+        </button>
+      </div>
+
+      <!-- BUDGET -->
+      <div class="bg-white p-3 rounded shadow mb-3">
+        <input
+          id="budgetInput"
+          type="number"
+          placeholder="Set Budget"
+          class="w-full p-2 border rounded mb-2"
+        />
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            onclick="setBudget()"
+            class="bg-purple-500 text-white p-2 rounded"
+          >
+            Set
+          </button>
+          <button
+            onclick="resetBudget()"
+            class="bg-red-500 text-white p-2 rounded"
+          >
+            Reset
+          </button>
+        </div>
+        <button
+          onclick="resetApp()"
+          class="bg-black text-white p-2 rounded w-full mt-2"
+        >
+          Reset All Data
+        </button>
+
+        <p class="text-sm mt-2">Remaining: ₦<span id="remaining">0</span></p>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="grid grid-cols-3 gap-2 text-center mb-3">
+        <div class="bg-green-200 p-2 rounded">₦<span id="income">0</span></div>
+        <div class="bg-red-200 p-2 rounded">₦<span id="expense">0</span></div>
+        <div class="bg-blue-200 p-2 rounded">₦<span id="balance">0</span></div>
+      </div>
+
+      <!-- FORM -->
+      <div class="bg-white p-3 rounded shadow mb-3">
+        <input
+          id="amount"
+          type="number"
+          placeholder="Amount"
+          class="w-full p-2 border rounded mb-2"
+        />
+
+        <select
+          id="type"
+          onchange="updateCategory()"
+          class="w-full p-2 border rounded mb-2"
+        >
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+
+        <select id="category" class="w-full p-2 border rounded mb-2"></select>
+
+        <input id="date" type="date" class="w-full p-2 border rounded mb-2" />
+
+        <button
+          onclick="addTransaction()"
+          class="w-full bg-blue-500 text-white p-2 rounded"
+        >
+          Add
+        </button>
+      </div>
+
+      <!-- LIST -->
+      <ul id="list" class="space-y-2 mb-3"></ul>
+
+      <!-- CHART -->
+      <div class="bg-white p-3 rounded shadow">
+        <canvas id="chart" style="max-height: 220px"></canvas>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
