@@ -1,9 +1,10 @@
 {
-  "name": "NairaTrack",
-  "short_name": "NairaTrack",
-  "start_url": "/",
+  "name": "Kleson Finance",
+  "short_name": "Kleson",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "theme_color": "#10b981",
+  "description": "A personal finance management tool for Nigerian users.",
   "icons": []
 }

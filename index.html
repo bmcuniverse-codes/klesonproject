@@ -1,148 +1,231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Leson Wallet</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kleson Finance | Personal Finance Manager</title>
+  <meta name="theme-color" content="#0f9f6e" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="loader" class="loader-screen">
+    <div class="loader-card">
+      <div class="brand-mark">KF</div>
+      <h1>Kleson Finance</h1>
+      <p>Preparing your smart finance dashboard...</p>
+      <div class="loader-line"><span></span></div>
+    </div>
+  </div>
 
-    <link rel="manifest" href="manifest.json" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-      .fade {
-        animation: fade 0.4s ease;
-      }
-      @keyframes fade {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-        }
-      }
-    </style>
-  </head>
-
-  <body class="bg-gray-100 p-4">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-xl font-bold mb-4">Leson Wallet</h1>
-
-      <!-- INSTALL BUTTON -->
-      <button
-        id="installBtn"
-        class="bg-blue-500 text-white p-2 rounded mb-3 hidden"
-      >
-        Install App
-      </button>
-
-      <!-- MODAL -->
-      <div
-        id="modal"
-        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden"
-      >
-        <div class="bg-white p-4 rounded text-sm">
-          <p>Track your income and expenses easily.</p>
-          <button
-            onclick="closeModal()"
-            class="bg-blue-500 text-white px-3 py-1 mt-2 rounded"
-          >
-            OK
-          </button>
+  <section id="introPage" class="intro-page hidden">
+    <div class="intro-shell">
+      <nav class="intro-nav">
+        <div class="logo"><span>KF</span> Kleson Finance</div>
+        <button class="ghost-btn" id="openLoginFromIntro">Demo Login</button>
+      </nav>
+      <div class="intro-grid">
+        <div class="intro-copy reveal">
+          <span class="eyebrow">Final Year Project</span>
+          <h1>Personal finance tracking built for Nigerian users.</h1>
+          <p>Kleson Finance helps users record income, track expenses, set budgets, analyze spending, export reports, and make better financial decisions from a clean mobile-first dashboard.</p>
+          <div class="intro-actions">
+            <button class="primary-btn" id="proceedBtn">Proceed to Project</button>
+            <button class="soft-btn" id="viewGuideBtn">How it works</button>
+          </div>
+        </div>
+        <div class="phone-preview reveal delay-1">
+          <div class="phone-card">
+            <div class="phone-top"></div>
+            <div class="mini-balance">
+              <span>Current Balance</span>
+              <strong>₦248,500</strong>
+            </div>
+            <div class="mini-bars">
+              <div><span style="width:76%"></span></div>
+              <div><span style="width:45%"></span></div>
+              <div><span style="width:61%"></span></div>
+            </div>
+            <div class="mini-list">
+              <p><b>Food</b><span>₦18,500</span></p>
+              <p><b>Transport</b><span>₦11,000</span></p>
+              <p><b>Data</b><span>₦6,500</span></p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- FILTER -->
-      <div class="grid grid-cols-2 gap-2 mb-3">
-        <input type="month" id="monthFilter" class="p-2 border rounded" />
-        <button
-          onclick="exportCSV()"
-          class="bg-green-500 text-white p-2 rounded"
-        >
-          Export
-        </button>
-      </div>
-
-      <!-- BUDGET -->
-      <div class="bg-white p-3 rounded shadow mb-3">
-        <input
-          id="budgetInput"
-          type="number"
-          placeholder="Set Budget"
-          class="w-full p-2 border rounded mb-2"
-        />
-        <div class="grid grid-cols-2 gap-2">
-          <button
-            onclick="setBudget()"
-            class="bg-purple-500 text-white p-2 rounded"
-          >
-            Set
-          </button>
-          <button
-            onclick="resetBudget()"
-            class="bg-red-500 text-white p-2 rounded"
-          >
-            Reset
-          </button>
-        </div>
-        <button
-          onclick="resetApp()"
-          class="bg-black text-white p-2 rounded w-full mt-2"
-        >
-          Reset All Data
-        </button>
-
-        <p class="text-sm mt-2">Remaining: ₦<span id="remaining">0</span></p>
-      </div>
-
-      <!-- SUMMARY -->
-      <div class="grid grid-cols-3 gap-2 text-center mb-3">
-        <div class="bg-green-200 p-2 rounded">₦<span id="income">0</span></div>
-        <div class="bg-red-200 p-2 rounded">₦<span id="expense">0</span></div>
-        <div class="bg-blue-200 p-2 rounded">₦<span id="balance">0</span></div>
-      </div>
-
-      <!-- FORM -->
-      <div class="bg-white p-3 rounded shadow mb-3">
-        <input
-          id="amount"
-          type="number"
-          placeholder="Amount"
-          class="w-full p-2 border rounded mb-2"
-        />
-
-        <select
-          id="type"
-          onchange="updateCategory()"
-          class="w-full p-2 border rounded mb-2"
-        >
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-
-        <select id="category" class="w-full p-2 border rounded mb-2"></select>
-
-        <input id="date" type="date" class="w-full p-2 border rounded mb-2" />
-
-        <button
-          onclick="addTransaction()"
-          class="w-full bg-blue-500 text-white p-2 rounded"
-        >
-          Add
-        </button>
-      </div>
-
-      <!-- LIST -->
-      <ul id="list" class="space-y-2 mb-3"></ul>
-
-      <!-- CHART -->
-      <div class="bg-white p-3 rounded shadow">
-        <canvas id="chart" style="max-height: 220px"></canvas>
+      <div class="intro-features reveal delay-2">
+        <article><b>Budgeting</b><span>Set monthly limits and track progress.</span></article>
+        <article><b>Reporting</b><span>Analyze spending by category and month.</span></article>
+        <article><b>Export</b><span>Download CSV or print reports.</span></article>
       </div>
     </div>
+  </section>
 
-    <script src="app.js"></script>
-  </body>
+  <main id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="logo side-logo"><span>KF</span> Kleson Finance</div>
+      <button class="nav-link active" data-page="dashboard">Dashboard</button>
+      <button class="nav-link" data-page="transactions">Transactions</button>
+      <button class="nav-link" data-page="budget">Budget</button>
+      <button class="nav-link" data-page="reports">Reports</button>
+      <button class="nav-link" data-page="insights">Insights</button>
+      <button class="nav-link" data-page="profile">Profile</button>
+      <button class="danger-outline" id="resetAllBtn">Reset App</button>
+    </aside>
+
+    <section class="content-area">
+      <header class="topbar">
+        <div>
+          <p class="muted">Welcome back</p>
+          <h2 id="userGreeting">Adepoju Ayomide</h2>
+        </div>
+        <div class="top-actions">
+          <button class="soft-btn small" id="guideBtn">Guide</button>
+          <button class="primary-btn small" id="installBtn" hidden>Install App</button>
+        </div>
+      </header>
+
+      <section class="page active-page" id="dashboardPage">
+        <div class="stats-grid">
+          <article class="stat-card income reveal"><span>Total Income</span><strong id="incomeTotal">₦0</strong><small>This month</small></article>
+          <article class="stat-card expense reveal delay-1"><span>Total Expenses</span><strong id="expenseTotal">₦0</strong><small>This month</small></article>
+          <article class="stat-card balance reveal delay-2"><span>Balance</span><strong id="balanceTotal">₦0</strong><small>Income minus expenses</small></article>
+          <article class="stat-card score reveal delay-3"><span>Health Score</span><strong id="healthScore">0%</strong><small id="healthText">No data yet</small></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel wide reveal">
+            <div class="panel-head">
+              <div><h3>Financial Overview</h3><p>Switch between pie and bar chart views.</p></div>
+              <button class="soft-btn small" id="toggleChartBtn">Switch Chart</button>
+            </div>
+            <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+          </section>
+
+          <section class="panel reveal delay-1">
+            <div class="panel-head"><div><h3>Quick Transaction</h3><p>Add income or expense quickly.</p></div></div>
+            <form id="transactionForm" class="form-grid compact-form">
+              <input id="amount" type="number" placeholder="Amount e.g. 5000" min="1" inputmode="numeric" required />
+              <select id="type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              <select id="category" required></select>
+              <input id="date" type="date" required />
+              <textarea id="note" placeholder="Short note (optional)"></textarea>
+              <button class="primary-btn full" type="submit">Add Transaction</button>
+            </form>
+          </section>
+        </div>
+
+        <section class="panel reveal">
+          <div class="panel-head"><div><h3>Expense Progress</h3><p>Each bar shows category spending against monthly budget.</p></div></div>
+          <div id="expenseProgress" class="progress-list"></div>
+        </section>
+      </section>
+
+      <section class="page" id="transactionsPage">
+        <section class="panel">
+          <div class="panel-head"><div><h3>Transactions</h3><p>Search, filter, delete, and review your records.</p></div></div>
+          <div class="filters">
+            <input id="searchInput" type="search" placeholder="Search transactions..." />
+            <input id="monthFilter" type="month" />
+            <select id="typeFilter"><option value="all">All Types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+            <select id="categoryFilter"><option value="all">All Categories</option></select>
+          </div>
+          <div id="transactionList" class="transaction-list"></div>
+        </section>
+      </section>
+
+      <section class="page" id="budgetPage">
+        <section class="panel budget-panel">
+          <div class="panel-head"><div><h3>Monthly Budget</h3><p>Set a total spending limit for the month.</p></div></div>
+          <div class="budget-box">
+            <input id="budgetInput" type="number" placeholder="Enter monthly budget" min="1" inputmode="numeric" />
+            <button class="primary-btn" id="setBudgetBtn">Set Budget</button>
+            <button class="danger-outline" id="resetBudgetBtn">Reset Budget</button>
+          </div>
+          <div class="budget-summary">
+            <div><span>Budget</span><strong id="budgetAmount">₦0</strong></div>
+            <div><span>Spent</span><strong id="budgetSpent">₦0</strong></div>
+            <div><span>Remaining</span><strong id="budgetRemaining">₦0</strong></div>
+          </div>
+          <div class="budget-main-progress"><span id="budgetBar"></span></div>
+        </section>
+      </section>
+
+      <section class="page" id="reportsPage">
+        <section class="panel">
+          <div class="panel-head">
+            <div><h3>Reports</h3><p>Export your financial activity for documentation.</p></div>
+            <div class="button-row"><button class="soft-btn small" id="exportCsvBtn">Export CSV</button><button class="primary-btn small" id="printReportBtn">Print Report</button></div>
+          </div>
+          <div class="report-grid" id="reportCards"></div>
+          <div class="chart-wrap small-chart"><canvas id="categoryChart"></canvas></div>
+        </section>
+      </section>
+
+      <section class="page" id="insightsPage">
+        <section class="panel">
+          <div class="panel-head"><div><h3>Smart Insights</h3><p>Simple guidance generated from your current financial records.</p></div></div>
+          <div id="insightList" class="insight-list"></div>
+        </section>
+      </section>
+
+      <section class="page" id="profilePage">
+        <section class="panel">
+          <div class="panel-head"><div><h3>Demo Profile</h3><p>Frontend-only profile saved on this browser.</p></div></div>
+          <form id="profileForm" class="form-grid">
+            <input id="profileName" placeholder="Full name" />
+            <input id="profileDept" placeholder="Department" />
+            <input id="profileSchool" placeholder="School" />
+            <button class="primary-btn full" type="submit">Save Profile</button>
+          </form>
+          <p class="disclaimer">This project uses browser LocalStorage. Data is private to the current browser/device and does not clash with other users on other devices.</p>
+        </section>
+      </section>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="mobile-nav active" data-page="dashboard">Home</button>
+      <button class="mobile-nav" data-page="transactions">Records</button>
+      <button class="mobile-nav" data-page="budget">Budget</button>
+      <button class="mobile-nav" data-page="reports">Reports</button>
+    </nav>
+  </main>
+
+  <div id="guideModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="modal-close" id="closeGuideBtn">×</button>
+      <h2>How to Use Kleson Finance</h2>
+      <ol>
+        <li>Add your income and expenses with correct dates.</li>
+        <li>Set a monthly budget to monitor spending limits.</li>
+        <li>Use transaction filters to analyze a particular month or category.</li>
+        <li>Check expense progress bars to see which category consumes your budget.</li>
+        <li>Export CSV or print report for project documentation.</li>
+      </ol>
+      <p class="disclaimer">Disclaimer: This is a frontend academic prototype. It stores data locally in the user’s browser and does not connect to a bank or external server.</p>
+      <button class="primary-btn full" id="understoodGuideBtn">I Understand</button>
+    </div>
+  </div>
+
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="modal-close" id="closeLoginBtn">×</button>
+      <h2>Demo Login</h2>
+      <p class="muted">This login is for project demonstration only.</p>
+      <form id="loginForm" class="form-grid">
+        <input id="loginName" placeholder="Enter your name" required />
+        <input id="loginEmail" type="email" placeholder="Email address" required />
+        <button class="primary-btn full" type="submit">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
 </html>
