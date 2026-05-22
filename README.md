@@ -1,6 +1,6 @@
 # Kleson Finance
 
-Kleson Finance is a frontend-only personal finance management web app for Nigerian users. It supports income and expense tracking, budgeting, reports, charts, progress bars, CSV export, print reports, demo login, PWA install support, and LocalStorage persistence.
+Kleson Finance is a personal finance management web app for Nigerian users. It supports income and expense tracking, budgeting, reports, charts, progress bars, CSV export, print reports, demo login, PWA install support, and LocalStorage persistence.
 
 ## Run locally
 
